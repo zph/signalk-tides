@@ -154,8 +154,8 @@ describe("canonical tide tiers", () => {
     await sendPosition(OPEN_OCEAN);
 
     expect(publishedPath(app, "environment.tide.method")).toBe("no-coverage");
-    expect(publishedPath(app, "environment.tide.heightNow")).toBeUndefined();
-    expect(publishedPath(app, "environment.tide.stationName")).toBeUndefined();
+    expect(publishedPath(app, "environment.tide.heightNow")).toBeNull();
+    expect(publishedPath(app, "environment.tide.stationName")).toBeNull();
     // The nearest station is still published with its distance so consumers can
     // see how far away any tide datum reference actually is.
     const stationName = publishedPath(app, "environment.tide.station.name");
@@ -233,7 +233,7 @@ describe("canonical tide tiers", () => {
     const nearest = nearestStation(OFFSHORE);
     expect(publishedPath(app, "environment.tide.stationName")).toBe(nearest.name);
     expect(publishedPath(app, "environment.tide.heightNow")).toBeDefined();
-    expect(publishedPath(app, "environment.tide.calculated.heightNow")).toBeUndefined();
+    expect(publishedPath(app, "environment.tide.calculated.heightNow")).toBeNull();
   });
 
   it("exposes the station-only option in the config schema", () => {

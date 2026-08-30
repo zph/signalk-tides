@@ -548,6 +548,16 @@ export default function (app: ServerAPI): Plugin {
           },
           { path: "environment.tide.station.heightNow" as Path, value: nearestLevel },
         );
+      } else {
+        // Deltas do not erase an earlier value when a path is omitted. Clear
+        // the alternate station paths when a position fix disappears so a
+        // consumer cannot mistake stale provenance for current coverage.
+        values.push(
+          { path: "environment.tide.station.name" as Path, value: null },
+          { path: "environment.tide.station.id" as Path, value: null },
+          { path: "environment.tide.station.distance" as Path, value: null },
+          { path: "environment.tide.station.heightNow" as Path, value: null },
+        );
       }
 
       // Always publish the spatially calculated value when a blend exists.
@@ -555,6 +565,11 @@ export default function (app: ServerAPI): Plugin {
         values.push({
           path: "environment.tide.calculated.heightNow" as Path,
           value: canonical.calculated.getWaterLevelAtTime({ time: now }).level,
+        });
+      } else {
+        values.push({
+          path: "environment.tide.calculated.heightNow" as Path,
+          value: null,
         });
       }
 
@@ -564,6 +579,18 @@ export default function (app: ServerAPI): Plugin {
       // extrapolated from a distant station; consumers stop instead of
       // recording a wrong datum.
       if (!canonical.predictor || !canonical.forecast || !canonical.attribution) {
+        // Explicit nulls are required to withdraw previous canonical values.
+        // Leaving a path out of a Signal K delta retains its former value.
+        values.push(
+          { path: "environment.tide.stationName" as Path, value: null },
+          { path: "environment.tide.heightNow" as Path, value: null },
+          { path: "environment.tide.state" as Path, value: null },
+          { path: "environment.tide.timeToNextExtreme" as Path, value: null },
+          { path: "environment.tide.heightHigh" as Path, value: null },
+          { path: "environment.tide.timeHigh" as Path, value: null },
+          { path: "environment.tide.heightLow" as Path, value: null },
+          { path: "environment.tide.timeLow" as Path, value: null },
+        );
         publish(now, values);
         return;
       }

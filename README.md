@@ -62,11 +62,11 @@ station-only behavior.
 
 ### FES spatial model (optional, requires uv)
 
-For waters far from any station, a FES-based spatial model will provide harmonics for any
-coordinate via a Python sidecar managed by [uv](https://docs.astral.sh/uv/). The plugin
-checks that uv is installed before ever attempting those calculations; when uv is missing,
-the FES option stays disabled with install instructions in the plugin configuration, and
-station interpolation keeps working without it.
+FES is reserved for a future spatial-model sidecar managed by
+[uv](https://docs.astral.sh/uv/). The plugin checks that uv is installed before ever
+attempting that path, but does not yet ship or provision the sidecar. Enabling the option
+therefore leaves FES inactive, reports the reason in plugin status, and continues with
+station interpolation.
 
 ### Tides API
 
