@@ -4,6 +4,43 @@ A SignalK plugin that provides offline tidal predictions for the vessel's positi
 
 Since 2.0, predictions are computed locally from harmonic constituents — no network access or API keys required.
 
+<details>
+<summary><strong>How this fork differs from upstream</strong></summary>
+
+This repository is a fork of the Open Waters
+[signalk-tides](https://github.com/openwatersio/signalk-tides) project, itself descended from the
+original work by Joachim Bakke and Scott Bender. Thank you to Brandon Keepers, Joachim, Scott, and
+all upstream contributors for maintaining and evolving offline tide prediction for Signal K.
+
+I am happy to upstream changes that prove useful beyond this fork. I have been iterating here first
+to learn which ideas hold up and what shape makes sense before proposing them upstream.
+
+This inventory compares the fork with
+[`upstream/main` at `64ab3a9`](https://github.com/openwatersio/signalk-tides/commit/64ab3a918c187d589095a47260247099e99bf8b9).
+
+## Major features and changes
+
+| Difference | Commits |
+| --- | --- |
+| Spatial tide interpolation blends nearby harmonic stations at the vessel using inverse-distance weighting and phasor-aware phase interpolation | `fe3ebe4` |
+| Distance-tiered canonical selection chooses a local station, an interpolated result, a farther nearest station, or explicit no coverage | `fe3ebe4`, `66906dc` |
+| A conservative station-only mode can disable interpolation without losing nearest-station predictions | `fe3ebe4` |
+
+## API and provenance improvements
+
+| Difference | Commits |
+| --- | --- |
+| Canonical output declares its method, nearest-station identity and distance, and the independently calculated interpolated height | `fe3ebe4` |
+| Validation tooling measures interpolation error by predicting held-out real stations from their neighbors | `fe3ebe4` |
+
+## Reliability improvements
+
+| Difference | Commits |
+| --- | --- |
+| Canonical tide paths go quiet when coverage disappears instead of retaining a stale value that consumers could mistake for a current tide | `66906dc` |
+
+</details>
+
 ## Installation
 
 Install `signalk-tides` from the SignalK Appstore or manually by running `npm install signalk-tides` in the SignalK server directory (`~/.signalk`).
